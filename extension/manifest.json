@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "AI Rephrase",
+  "name": "Rephrase",
   "version": "1.0.0",
-  "description": "Select text in any editable field and right-click 'AI Rephrase' or press Ctrl+K to rephrase in place with AI animations.",
+  "description": "Select text in any editable field and right-click 'Rephrase' or press Ctrl+K to rephrase in place.",
   "permissions": ["contextMenus"],
   "host_permissions": ["http://localhost:3000/*"],
+
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {

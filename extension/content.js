@@ -8,34 +8,30 @@ function injectStyles() {
   style.id = "ai-rephrase-styles";
   style.textContent = `
     @keyframes aiShimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-    @keyframes aiSpin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.2); }
-      100% { transform: rotate(360deg) scale(1); }
+      0% { opacity: 0.65; }
+      50% { opacity: 1; }
+      100% { opacity: 0.65; }
     }
     @keyframes aiPulseGlow {
-      0% { box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.6), 0 0 14px rgba(168, 85, 247, 0.4); }
-      50% { box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.8), 0 0 22px rgba(236, 72, 153, 0.6); }
-      100% { box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.6), 0 0 14px rgba(168, 85, 247, 0.4); }
+      0% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.4); }
+      50% { box-shadow: 0 0 0 3px rgba(212, 212, 216, 0.6); }
+      100% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.4); }
     }
     @keyframes aiSuccessGlow {
-      0% { box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.8), 0 0 18px rgba(16, 185, 129, 0.6); }
-      100% { box-shadow: 0 0 0 0px transparent, 0 0 0px transparent; }
+      0% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.5); }
+      100% { box-shadow: 0 0 0 0px transparent; }
     }
     @keyframes aiBadgePop {
-      0% { opacity: 0; transform: translateY(6px) scale(0.92); }
+      0% { opacity: 0; transform: translateY(4px) scale(0.96); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .ai-field-glowing {
-      animation: aiPulseGlow 1.6s infinite ease-in-out !important;
-      transition: box-shadow 0.3s ease !important;
+      animation: aiPulseGlow 1.8s infinite ease-in-out !important;
+      transition: box-shadow 0.2s ease !important;
     }
     .ai-field-success {
-      animation: aiSuccessGlow 1.2s ease-out forwards !important;
+      animation: aiSuccessGlow 1s ease-out forwards !important;
     }
 
     .ai-floating-badge {
@@ -46,52 +42,58 @@ function injectStyles() {
       gap: 8px;
       padding: 6px 14px;
       border-radius: 20px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(168, 85, 247, 0.5);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 14px rgba(168, 85, 247, 0.35);
-      color: #ffffff;
+      background: rgba(24, 24, 27, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      color: #f4f4f5;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
+      font-weight: 500;
+      letter-spacing: 0.1px;
       pointer-events: none;
-      animation: aiBadgePop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: aiBadgePop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       user-select: none;
     }
 
-    .ai-sparkle {
+    @keyframes aiSpinnerRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .ai-spinner {
       display: inline-block;
-      animation: aiSpin 2s infinite linear;
-      font-size: 14px;
+      width: 13px;
+      height: 13px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #f4f4f5;
+      border-radius: 50%;
+      animation: aiSpinnerRotate 0.8s linear infinite;
+      box-sizing: border-box;
+      flex-shrink: 0;
     }
 
     .ai-shimmer-text {
-      background: linear-gradient(90deg, #c084fc, #f472b6, #60a5fa, #c084fc);
-      background-size: 200% auto;
-      color: transparent;
-      -webkit-background-clip: text;
-      background-clip: text;
-      animation: aiShimmer 2.5s linear infinite;
+      color: #e4e4e7;
+      animation: aiShimmer 1.8s ease-in-out infinite;
     }
 
     .ai-badge-success {
-      border-color: rgba(16, 185, 129, 0.6) !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 14px rgba(16, 185, 129, 0.4) !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
     }
 
     .ai-highlight-span {
-      background: rgba(168, 85, 247, 0.3) !important;
-      border-bottom: 2px solid #a855f7 !important;
+      background: rgba(161, 161, 170, 0.2) !important;
+      border-bottom: 2px solid #a1a1aa !important;
       border-radius: 2px !important;
-      transition: all 0.3s ease !important;
+      transition: all 0.2s ease !important;
     }
     .ai-highlight-span-success {
-      background: rgba(16, 185, 129, 0.3) !important;
-      border-bottom: 2px solid #10b981 !important;
+      background: rgba(161, 161, 170, 0.15) !important;
+      border-bottom: 2px solid #71717a !important;
       border-radius: 2px !important;
-      transition: all 0.5s ease !important;
+      transition: all 0.4s ease !important;
     }
   `;
   (document.head || document.documentElement).appendChild(style);
@@ -263,12 +265,13 @@ function startLoadingAnimation(target) {
   badge.style.left = `${left}px`;
 
   badge.innerHTML = `
-    <span class="ai-sparkle">✨</span>
-    <span class="ai-shimmer-text">AI is rephrasing...</span>
+    <span class="ai-spinner"></span>
+    <span class="ai-shimmer-text">Rephrasing...</span>
   `;
 
   document.body.appendChild(badge);
 }
+
 
 function stopLoadingAnimation(target) {
   const badge = document.getElementById("ai-rephrase-badge");
@@ -291,8 +294,8 @@ async function animateTextReplacement(target, newText) {
   if (badge) {
     badge.className = "ai-floating-badge ai-badge-success";
     badge.innerHTML = `
-      <span style="color: #10b981; font-size: 15px;">✓</span>
-      <span style="color: #10b981;">Rephrased!</span>
+      <span style="color: #e4e4e7; font-size: 14px;">✓</span>
+      <span style="color: #e4e4e7;">Rephrased!</span>
     `;
   }
 
@@ -409,8 +412,8 @@ function toast(message, { error = false, sticky = false } = {}) {
     document.documentElement.appendChild(toastEl);
   }
   toastEl.textContent = message;
-  toastEl.style.background = error ? "rgba(225, 29, 72, 0.95)" : "rgba(30, 41, 59, 0.95)";
-  toastEl.style.border = error ? "1px solid rgba(244, 63, 94, 0.5)" : "1px solid rgba(148, 163, 184, 0.3)";
+  toastEl.style.background = error ? "rgba(39, 39, 42, 0.96)" : "rgba(24, 24, 27, 0.96)";
+  toastEl.style.border = error ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid rgba(255, 255, 255, 0.15)";
   toastEl.style.display = "block";
   clearTimeout(toastTimer);
   if (!sticky) {

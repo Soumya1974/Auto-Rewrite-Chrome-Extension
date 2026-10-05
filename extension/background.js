@@ -6,11 +6,12 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: "ai-rephrase",
-      title: "✨ AI Rephrase (Ctrl+K)",
+      title: "Rephrase (Ctrl+K)",
       contexts: ["editable", "selection"],
     });
   });
 });
+
 
 // Send a message to the page, ignore errors (e.g. page not ready)
 async function tell(tabId, frameId, message) {
