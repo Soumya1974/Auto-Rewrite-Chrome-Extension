@@ -1,10 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Rephrase",
-  "version": "1.0.0",
-  "description": "Select text in any editable field and right-click 'Rephrase' or press Ctrl+K to rephrase in place.",
+  "name": "Rephrase, Grammar, Reply & Casual Chat",
+  "version": "1.4.0",
+  "description": "Select text in any field or page: Ctrl+K (Rephrase), Ctrl+G (Fix Grammar), Ctrl+M (Reply), Ctrl+L (Casual Chat), Ctrl+B (Explain Text).",
   "permissions": ["contextMenus"],
   "host_permissions": ["http://localhost:3000/*"],
+
+
+
 
   "background": { "service_worker": "background.js" },
   "content_scripts": [
