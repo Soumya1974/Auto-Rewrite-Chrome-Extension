@@ -13,12 +13,12 @@ function injectStyles() {
       100% { opacity: 0.65; }
     }
     @keyframes aiPulseGlow {
-      0% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.4); }
-      50% { box-shadow: 0 0 0 3px rgba(212, 212, 216, 0.6); }
-      100% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.4); }
+      0% { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); }
+      50% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45); }
+      100% { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); }
     }
     @keyframes aiSuccessGlow {
-      0% { box-shadow: 0 0 0 2px rgba(161, 161, 170, 0.5); }
+      0% { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); }
       100% { box-shadow: 0 0 0 0px transparent; }
     }
     @keyframes aiBadgePop {
@@ -41,13 +41,13 @@ function injectStyles() {
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      border-radius: 20px;
-      background: rgba(24, 24, 27, 0.94);
+      border-radius: 0px !important;
+      background: #09090b;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-      color: #f4f4f5;
+      border: 1px solid #27272a;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      color: #ffffff;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 13px;
       font-weight: 500;
@@ -65,8 +65,8 @@ function injectStyles() {
       display: inline-block;
       width: 13px;
       height: 13px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #f4f4f5;
+      border: 2px solid #27272a;
+      border-top-color: #ffffff;
       border-radius: 50%;
       animation: aiSpinnerRotate 0.8s linear infinite;
       box-sizing: border-box;
@@ -79,100 +79,172 @@ function injectStyles() {
     }
 
     .ai-badge-success {
-      border-color: rgba(255, 255, 255, 0.2) !important;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+      border-color: #3f3f46 !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
     }
 
     .ai-highlight-span {
-      background: rgba(161, 161, 170, 0.2) !important;
-      border-bottom: 2px solid #a1a1aa !important;
-      border-radius: 2px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-bottom: 2px solid #71717a !important;
+      border-radius: 0px !important;
       transition: all 0.2s ease !important;
     }
     .ai-highlight-span-success {
-      background: rgba(161, 161, 170, 0.15) !important;
-      border-bottom: 2px solid #71717a !important;
-      border-radius: 2px !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-bottom: 2px solid #ffffff !important;
+      border-radius: 0px !important;
       transition: all 0.4s ease !important;
     }
 
     @keyframes aiCardSlideIn {
-      0% { opacity: 0; transform: translateX(20px) scale(0.96); }
-      100% { opacity: 1; transform: translateX(0) scale(1); }
+      0% { opacity: 0; transform: translateY(-10px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
+    
+    /* EXPLAIN CARD - DARK THEME (DEFAULT) */
     .ai-explain-card {
       position: fixed;
       top: 24px;
       right: 24px;
-      width: 360px;
+      width: 380px;
       max-width: calc(100vw - 48px);
       max-height: 80vh;
       z-index: 2147483647;
-      background: rgba(24, 24, 27, 0.96);
+      background: #09090b;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      border: 1px solid #27272a;
+      border-radius: 0px !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85);
       color: #f4f4f5;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 13.5px;
-      line-height: 1.5;
+      line-height: 1.6;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       animation: aiCardSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      user-select: text;
     }
+
     .ai-explain-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(39, 39, 42, 0.6);
+      border-bottom: 1px solid #27272a;
+      background: #18181b;
+      cursor: grab;
+      user-select: none;
+    }
+    .ai-explain-header:active {
+      cursor: grabbing;
+    }
+
+    .ai-explain-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-drag-icon {
+      color: #71717a;
+      font-size: 12px;
+      letter-spacing: -2px;
     }
     .ai-explain-title {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13px;
-      color: #f4f4f5;
-      letter-spacing: 0.1px;
-    }
-    .ai-explain-close-btn {
-      background: transparent;
-      border: none;
-      color: #a1a1aa;
-      font-size: 16px;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      line-height: 1;
-    }
-    .ai-explain-close-btn:hover {
       color: #ffffff;
-      background: rgba(255, 255, 255, 0.15);
+      letter-spacing: 0.6px;
     }
+
+    .ai-explain-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-action-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #a1a1aa;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 3px 7px;
+      border-radius: 0px;
+      transition: all 0.15s ease;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-action-btn:hover {
+      color: #ffffff;
+      background: #27272a;
+      border-color: #3f3f46;
+    }
+
     .ai-explain-body {
-      padding: 14px 16px;
+      padding: 16px;
       overflow-y: auto;
       max-height: 60vh;
     }
     .ai-explain-quote {
-      font-size: 12px;
+      font-size: 12.5px;
       color: #a1a1aa;
-      border-left: 2px solid #a1a1aa;
-      padding-left: 8px;
-      margin-bottom: 12px;
-      font-style: italic;
+      border-left: 2px solid #52525b;
+      padding-left: 10px;
+      margin-bottom: 14px;
+      font-style: normal;
       word-break: break-word;
       max-height: 60px;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .ai-explain-content {
-      color: #e4e4e7;
+      color: #f4f4f5;
       white-space: pre-wrap;
-      font-size: 13px;
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+
+    /* EXPLAIN CARD - LIGHT THEME */
+    .ai-explain-card.ai-theme-light {
+      background: #ffffff !important;
+      border-color: #e4e4e7 !important;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18) !important;
+      color: #09090b !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-explain-header {
+      background: #f4f4f5 !important;
+      border-bottom-color: #e4e4e7 !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-explain-title {
+      color: #09090b !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-drag-icon {
+      color: #a1a1aa !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-action-btn {
+      color: #52525b !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-action-btn:hover {
+      color: #09090b !important;
+      background: #e4e4e7 !important;
+      border-color: #d4d4d8 !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-explain-quote {
+      color: #52525b !important;
+      border-left-color: #a1a1aa !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-explain-content {
+      color: #09090b !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-spinner {
+      border-color: #e4e4e7 !important;
+      border-top-color: #09090b !important;
+    }
+    .ai-explain-card.ai-theme-light .ai-shimmer-text {
+      color: #52525b !important;
     }
   `;
   (document.head || document.documentElement).appendChild(style);
@@ -438,19 +510,89 @@ function closeExplainCard() {
   }
 }
 
+let currentTheme = localStorage.getItem("ai_rephrase_theme") || "dark";
+
+function makeDraggable(card, handle) {
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let initialLeft = 0;
+  let initialTop = 0;
+
+  handle.addEventListener("mousedown", (e) => {
+    if (e.target.closest(".ai-action-btn")) return;
+
+    isDragging = true;
+    const rect = card.getBoundingClientRect();
+    startX = e.clientX;
+    startY = e.clientY;
+    initialLeft = rect.left;
+    initialTop = rect.top;
+
+    card.style.right = "auto";
+    card.style.left = `${initialLeft}px`;
+    card.style.top = `${initialTop}px`;
+    card.style.margin = "0";
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+
+  function onMouseMove(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    let newLeft = initialLeft + dx;
+    let newTop = initialTop + dy;
+
+    const maxLeft = Math.max(0, window.innerWidth - card.offsetWidth);
+    const maxTop = Math.max(0, window.innerHeight - card.offsetHeight);
+
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(0, Math.min(newTop, maxTop));
+
+    card.style.left = `${newLeft}px`;
+    card.style.top = `${newTop}px`;
+  }
+
+  function onMouseUp() {
+    isDragging = false;
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  }
+}
+
+function cleanExplanationText(text) {
+  if (!text) return "";
+  return text
+    .replace(/```[\s\S]*?```/g, (match) => match.replace(/```/g, ""))
+    .replace(/[`*#_~]/g, "")
+    .replace(/^[\s]*[-•*+]\s+/gm, "")
+    .replace(/\n+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 async function showExplainCard(textToExplain) {
   injectStyles();
   closeExplainCard();
 
   const card = document.createElement("div");
-  card.className = "ai-explain-card";
+  card.className = `ai-explain-card ${currentTheme === "light" ? "ai-theme-light" : ""}`;
 
   const truncatedQuote = textToExplain.length > 120 ? textToExplain.slice(0, 120) + "..." : textToExplain;
 
   card.innerHTML = `
     <div class="ai-explain-header">
-      <span class="ai-explain-title">Explanation</span>
-      <button class="ai-explain-close-btn" title="Close (Esc)">✕</button>
+      <div class="ai-explain-header-left">
+        <span class="ai-drag-icon">⋮⋮</span>
+        <span class="ai-explain-title">Explanation</span>
+      </div>
+      <div class="ai-explain-header-actions">
+        <button class="ai-action-btn ai-theme-toggle-btn" title="Toggle Light/Dark Mode">${currentTheme === "light" ? "Dark" : "Light"}</button>
+        <button class="ai-action-btn ai-explain-close-btn" title="Close (Esc)">✕</button>
+      </div>
     </div>
     <div class="ai-explain-body">
       <div class="ai-explain-quote">"${truncatedQuote}"</div>
@@ -463,6 +605,24 @@ async function showExplainCard(textToExplain) {
 
   document.body.appendChild(card);
   activeExplainCard = card;
+
+  const header = card.querySelector(".ai-explain-header");
+  makeDraggable(card, header);
+
+  const themeBtn = card.querySelector(".ai-theme-toggle-btn");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      localStorage.setItem("ai_rephrase_theme", currentTheme);
+      if (currentTheme === "light") {
+        card.classList.add("ai-theme-light");
+        themeBtn.textContent = "Dark";
+      } else {
+        card.classList.remove("ai-theme-light");
+        themeBtn.textContent = "light";
+      }
+    });
+  }
 
   const closeBtn = card.querySelector(".ai-explain-close-btn");
   if (closeBtn) {
@@ -489,7 +649,7 @@ async function showExplainCard(textToExplain) {
     }
 
     if (contentEl) {
-      contentEl.textContent = res.rephrased;
+      contentEl.textContent = cleanExplanationText(res.rephrased);
     }
   } catch (err) {
     if (!activeExplainCard || activeExplainCard !== card) return;
@@ -818,18 +978,18 @@ function toast(message, { error = false, sticky = false } = {}) {
       bottom: "16px",
       zIndex: "2147483647",
       padding: "10px 16px",
-      borderRadius: "10px",
+      borderRadius: "0px",
       font: "600 13px system-ui, sans-serif",
-      color: "#fff",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+      color: "#ffffff",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.7)",
       backdropFilter: "blur(8px)",
       transition: "all 0.3s ease",
     });
     document.documentElement.appendChild(toastEl);
   }
   toastEl.textContent = message;
-  toastEl.style.background = error ? "rgba(39, 39, 42, 0.96)" : "rgba(24, 24, 27, 0.96)";
-  toastEl.style.border = error ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid rgba(255, 255, 255, 0.15)";
+  toastEl.style.background = "#09090b";
+  toastEl.style.border = error ? "1px solid #71717a" : "1px solid #27272a";
   toastEl.style.display = "block";
   clearTimeout(toastTimer);
   if (!sticky) {
