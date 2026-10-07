@@ -194,8 +194,8 @@ function isEditableElement(el) {
   );
 }
 
-// Find an active or available editable element on the page (e.g. WhatsApp Web, Gmail, Slack, ChatGPT)
-function findEditableElement() {
+// Find an active or available editable element on the page, prioritized by proximity to contextNode
+function findEditableElement(contextNode = null) {
   const activeEl = document.activeElement;
 
   if (activeEl && isEditableElement(activeEl)) {
@@ -207,24 +207,102 @@ function findEditableElement() {
     if (parentEditable) return parentEditable;
   }
 
+  // Determine source node / selection container
+  let startContainer = contextNode;
+  if (!startContainer) {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      startContainer = sel.anchorNode;
+    }
+  }
+
+  if (startContainer && startContainer.nodeType === Node.TEXT_NODE) {
+    startContainer = startContainer.parentElement;
+  }
+
+  // 1. Check within closest parent comment or reply container of the selected text
+  if (startContainer) {
+    const commentContainer = startContainer.closest(
+      "[role='article'], .comment, .reply, .message, .thread, .comment-box, [data-testid*='comment'], [class*='comment'], [class*='reply'], [class*='message']"
+    ) || startContainer.parentElement;
+
+    if (commentContainer) {
+      // Look for an editable element INSIDE or right next to this parent comment container
+      const localEditable = commentContainer.querySelector(
+        "div[contenteditable='true'], textarea:not([readonly]), input[type='text']:not([readonly])"
+      );
+      if (localEditable && localEditable.offsetWidth > 0 && localEditable.offsetHeight > 0) {
+        return localEditable;
+      }
+
+      // Check next/previous sibling elements for reply input box
+      let sibling = commentContainer.nextElementSibling || commentContainer.parentElement?.nextElementSibling;
+      if (sibling) {
+        const sibEditable = sibling.querySelector(
+          "div[contenteditable='true'], textarea:not([readonly]), input[type='text']:not([readonly])"
+        );
+        if (sibEditable && sibEditable.offsetWidth > 0 && sibEditable.offsetHeight > 0) {
+          return sibEditable;
+        }
+      }
+    }
+  }
+
+  // 2. Gather all visible editable elements on page
   const selectors = [
     "div[contenteditable='true'][role='textbox']",
     "div[contenteditable='true'][data-tab]",
     "div[contenteditable='true'][aria-label*='Type a message']",
     "div[contenteditable='true'][aria-label*='Message']",
+    "div[contenteditable='true'][aria-label*='Reply']",
+    "div[contenteditable='true'][aria-label*='comment']",
     "div[contenteditable='true']",
     "textarea:not([readonly])",
     "input[type='text']:not([readonly])"
   ];
 
+  const candidates = [];
   for (const selector of selectors) {
-    const candidate = document.querySelector(selector);
-    if (candidate && candidate.offsetWidth > 0 && candidate.offsetHeight > 0) {
-      return candidate;
+    const els = document.querySelectorAll(selector);
+    for (const el of els) {
+      if (el.offsetWidth > 0 && el.offsetHeight > 0 && !candidates.includes(el)) {
+        candidates.push(el);
+      }
     }
   }
 
-  return null;
+  if (candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0];
+
+  // 3. If multiple candidates exist, find the one with closest vertical distance to selected text
+  let sourceRect = null;
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    sourceRect = sel.getRangeAt(0).getBoundingClientRect();
+  } else if (startContainer && startContainer.getBoundingClientRect) {
+    sourceRect = startContainer.getBoundingClientRect();
+  }
+
+  if (sourceRect && (sourceRect.width > 0 || sourceRect.height > 0)) {
+    const sourceCenterY = sourceRect.top + sourceRect.height / 2 + window.scrollY;
+    let closestEl = candidates[0];
+    let minDistance = Infinity;
+
+    for (const candidate of candidates) {
+      const candRect = candidate.getBoundingClientRect();
+      const candCenterY = candRect.top + candRect.height / 2 + window.scrollY;
+      const distance = Math.abs(candCenterY - sourceCenterY);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestEl = candidate;
+      }
+    }
+
+    return closestEl;
+  }
+
+  return candidates[0];
 }
 
 function getOrMakeRange(el) {
@@ -263,6 +341,7 @@ function captureTarget(mode = "rephrase") {
   // MODE: REPLY (Ctrl+M) & CASUAL (Ctrl+L) - Can select ANY text on page
   if (mode === "reply" || mode === "casual") {
     let sourceText = domSelectedText;
+    let sourceNode = sel && sel.anchorNode ? sel.anchorNode : activeEl;
 
     if (!sourceText && activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA")) {
       const start = activeEl.selectionStart;
@@ -278,7 +357,7 @@ function captureTarget(mode = "rephrase") {
       return { error: "Please highlight or select the text/message first." };
     }
 
-    const targetEl = findEditableElement();
+    const targetEl = findEditableElement(sourceNode);
     if (!targetEl) {
       return { error: "Could not find a text input box to write into. Please click your chat box." };
     }
@@ -589,6 +668,43 @@ function dispatchInputEvents(el, data = "") {
   } catch (e) {}
 }
 
+function smoothFrameDelay(targetMs) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    function tick(now) {
+      if (now - start >= targetMs) {
+        resolve();
+      } else {
+        requestAnimationFrame(tick);
+      }
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+function getTypingChunks(text) {
+  const len = text.length;
+  let chunkSize = 1;
+  let baseDelay = 18;
+
+  if (len > 150) {
+    chunkSize = 4;
+    baseDelay = 10;
+  } else if (len > 80) {
+    chunkSize = 3;
+    baseDelay = 12;
+  } else if (len > 35) {
+    chunkSize = 2;
+    baseDelay = 15;
+  }
+
+  const chunks = [];
+  for (let i = 0; i < len; i += chunkSize) {
+    chunks.push(text.slice(i, i + chunkSize));
+  }
+  return { chunks, baseDelay };
+}
+
 // In-place animated text replacement compatible with WhatsApp Web, Lexical, Gmail, Slate, etc.
 async function animateTextReplacement(target, newText, successLabel = "Rephrased!") {
   if (!target || target.error) return;
@@ -608,29 +724,33 @@ async function animateTextReplacement(target, newText, successLabel = "Rephrased
     el.classList.add("ai-field-success");
   }
 
-  const words = newText.split(/(\s+)/);
-  const delayPerChunk = Math.max(15, Math.min(45, Math.floor(350 / Math.max(1, words.length))));
+  const { chunks, baseDelay } = getTypingChunks(newText);
 
   if (kind === "input") {
     el.focus();
     let startIdx = mode === "reply" ? (el.selectionStart || el.value.length) : target.start;
     let endIdx = mode === "reply" ? startIdx : target.end;
 
-    for (let i = 0; i < words.length; i++) {
+    if (mode !== "reply" && startIdx !== endIdx) {
       el.setSelectionRange(startIdx, endIdx);
-      const ok = document.execCommand("insertText", false, words[i]);
-      if (!ok) {
-        el.setRangeText(words[i], el.selectionStart, el.selectionEnd, "end");
-      }
-
-      startIdx += words[i].length;
+      document.execCommand("insertText", false, "");
       endIdx = startIdx;
+    }
 
-      dispatchInputEvents(el, words[i]);
-
-      if (i < words.length - 1) {
-        await new Promise((r) => setTimeout(r, delayPerChunk));
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      el.setSelectionRange(startIdx, startIdx);
+      const ok = document.execCommand("insertText", false, chunk);
+      if (!ok) {
+        el.setRangeText(chunk, startIdx, startIdx, "end");
       }
+
+      startIdx += chunk.length;
+      dispatchInputEvents(el, chunk);
+
+      const isPunct = /[.,?!;\n]/.test(chunk);
+      const delay = isPunct ? baseDelay * 2.2 : baseDelay;
+      await smoothFrameDelay(delay);
     }
 
     el.setSelectionRange(startIdx, startIdx);
@@ -643,17 +763,16 @@ async function animateTextReplacement(target, newText, successLabel = "Rephrased
       } catch (e) {}
     }
 
-    for (let i = 0; i < words.length; i++) {
-      focusAndEnsureRange(el, mode, null);
-
-      const inserted = document.execCommand("insertText", false, words[i]);
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const inserted = document.execCommand("insertText", false, chunk);
 
       if (!inserted) {
         try {
           const sel = window.getSelection();
           if (sel && sel.rangeCount > 0) {
             const range = sel.getRangeAt(0);
-            const textNode = document.createTextNode(words[i]);
+            const textNode = document.createTextNode(chunk);
             range.insertNode(textNode);
             if (textNode && textNode.parentNode) {
               range.setStartAfter(textNode);
@@ -664,16 +783,16 @@ async function animateTextReplacement(target, newText, successLabel = "Rephrased
           }
         } catch (e) {
           try {
-            el.innerText += words[i];
+            el.innerText += chunk;
           } catch (err) {}
         }
       }
 
-      dispatchInputEvents(el, words[i]);
+      dispatchInputEvents(el, chunk);
 
-      if (i < words.length - 1) {
-        await new Promise((r) => setTimeout(r, delayPerChunk));
-      }
+      const isPunct = /[.,?!;\n]/.test(chunk);
+      const delay = isPunct ? baseDelay * 2.2 : baseDelay;
+      await smoothFrameDelay(delay);
     }
   }
 

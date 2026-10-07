@@ -1,3 +1,5 @@
+importScripts("axios.min.js");
+
 const REPHRASE_API_URL = "http://localhost:3000/api/rephrase";
 const REPLY_API_URL = "http://localhost:3000/api/reply";
 const EXPLAIN_API_URL = "http://localhost:3000/api/explain";
@@ -40,7 +42,7 @@ async function tell(tabId, frameId, message) {
   }
 }
 
-// Call backend AI API
+// Call backend AI API using Axios
 async function callAIAPI(text, mode = "rephrase") {
   let url = REPHRASE_API_URL;
   if (mode === "reply" || mode === "casual") url = REPLY_API_URL;
@@ -48,16 +50,16 @@ async function callAIAPI(text, mode = "rephrase") {
 
   const payload = { text, mode };
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.error || "Something went wrong.");
+  try {
+    const response = await axios.post(url, payload, {
+      headers: { "Content-Type": "application/json" },
+      timeout: 30000,
+    });
+    return response.data.rephrased;
+  } catch (err) {
+    const errorMsg = err.response?.data?.error || err.message || "Something went wrong.";
+    throw new Error(errorMsg);
   }
-  return data.rephrased;
 }
 
 // Handle context menu right click
