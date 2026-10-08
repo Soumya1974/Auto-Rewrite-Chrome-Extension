@@ -27,3 +27,6 @@ npm run dev
 1. Open `chrome://extensions/` in Chrome.
 2. Enable **Developer mode**.
 3. Click **Load unpacked** and select the `extension` directory.
+
+<!-- temp: sync build trigger -->
+
