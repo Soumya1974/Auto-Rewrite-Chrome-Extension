@@ -28,5 +28,3 @@ npm run dev
 2. Enable **Developer mode**.
 3. Click **Load unpacked** and select the `extension` directory.
 
-<!-- temp: sync build trigger -->
-
