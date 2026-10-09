@@ -22,7 +22,10 @@ app.use(
   })
 );
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/health", (_req, res) => {
+  console.log("Health check request received");
+  return res.json({ ok: true });
+});
 app.use("/api/rephrase", rephraseRoutes);
 app.use("/api/reply", replyRoutes);
 app.use("/api/explain", explainRoutes);
